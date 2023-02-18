@@ -7,12 +7,28 @@ const { notesRouter } = require("./routes/Notes.routes");
 const { userRouter } = require("./routes/User.routes");
 const { authenticate } = require("./middlewares/authenticate.middleware");
 const cors = require("cors");
+const swaggerJSdoc = require("swagger-jsdoc");
+const swaggerUi = require("swagger-ui-express");
 
 app.use(
   cors({
     origin: "*",
   })
 );
+
+const options = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "Notes App",
+      version: "1.0.0",
+    },
+  },
+  apis: ["./routes/*.js"],
+};
+
+const swaggerSpec = swaggerJSdoc(options);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.get("/", (req, res) => {
   res.send("WELCOME");

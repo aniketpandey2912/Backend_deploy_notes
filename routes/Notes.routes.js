@@ -2,6 +2,51 @@ const express = require("express");
 const notesRouter = express.Router();
 const { NoteModel } = require("../model/Note.model");
 
+/**
+ * @swagger
+ * components:
+ *  schemas:
+ *    Note:
+ *      type: object
+ *      properties:
+ *        id:
+ *          type: string
+ *          description: The auto-generated id of the note
+ *        title:
+ *          type: string
+ *          description: Title of the note
+ *        desc:
+ *          type: string
+ *          description: description of the note
+ *        userID:
+ *          type: string
+ *          description: The auto-generated user id
+ */
+
+/**
+ * @swagger
+ * tags:
+ *  name: Notes
+ *  description: All the APIs related to Notes
+ */
+
+/**
+ * @swagger
+ * /notes:
+ *  get:
+ *    summary: This will get all data from the database
+ *    tags: [Notes]
+ *    responses:
+ *      200:
+ *        description: A list of notes
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: array
+ *            items:
+ *              $ref: "#/components/schemas/Note"
+ */
+
 notesRouter.get("/", async (req, res) => {
   try {
     const notes = await NoteModel.find();
@@ -11,6 +56,28 @@ notesRouter.get("/", async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /notes/create:
+ *  post:
+ *    summary: To create a note
+ *    tags: [Notes]
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            $ref: "#/components/schemas/Note"
+ *    responses:
+ *      200:
+ *        description: Note created successfully
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: "#/components/schemas/Note"
+ *      500:
+ *        description: Server error
+ */
 notesRouter.post("/create", async (req, res) => {
   let noteDetails = req.body;
   try {
@@ -21,6 +88,38 @@ notesRouter.post("/create", async (req, res) => {
     res.send({ msg: "Something went wrong", error: err.message });
   }
 });
+
+/**
+ * @swagger
+ * /notes/update/{id}:
+ *  patch:
+ *    summary: To update a node
+ *    tags: [Notes]
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: The note id
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            $ref: "#/components/schemas/Note"
+ *    responses:
+ *      200:
+ *        description: The note details updated successfully
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: "#/components/schemas/Note"
+ *      404:
+ *        description: The note doesn't exist
+ *      500:
+ *        description: Server error
+ */
 
 notesRouter.patch("/update/:id", async (req, res) => {
   const updates = req.body;
@@ -39,6 +138,38 @@ notesRouter.patch("/update/:id", async (req, res) => {
     res.send({ msg: "Something went wrong", error: err.message });
   }
 });
+
+/**
+ * @swagger
+ * /notes/delete/{id}:
+ *  patch:
+ *    summary: To delete a node
+ *    tags: [Notes]
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: The note id
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            $ref: "#/components/schemas/Note"
+ *    responses:
+ *      200:
+ *        description: The note deleted successfully
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: "#/components/schemas/Note"
+ *      404:
+ *        description: The note doesn't exist
+ *      500:
+ *        description: Server error
+ */
 
 notesRouter.delete("/delete/:id", async (req, res) => {
   const ID = req.params.id;
